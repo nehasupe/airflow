@@ -28,6 +28,7 @@ class ReadFile(beam.DoFn):
 				currency = prod.get("currency")
 				clear_data.append([product_id, product_name, product_price, currency, created_at])
 		print(clear_data)
+		logging.getLogger().setLevel(logging.INFO)
 		yield clear_data
 class WriteCSVFile(beam.DoFn):
 	def __init__(self, bucket_name):
@@ -37,8 +38,10 @@ class WriteCSVFile(beam.DoFn):
 		self.client = storage.Client()
 
 	def process(self, mylist):
+		logging.getLogger().setLevel(logging.INFO)
 		df = pd.DataFrame(mylist, columns={'product_id': str, 'product_name': str, 'product_price': str, 'currency': currency, 'created_at': str})
 		bucket = self.client.get_bucket(self.bucket_name)
+		logging.getLogger().setLevel(logging.INFO)
 		bucket.blob(f'csv_exports.csv').upload_from_string(df.to_csv(index=False), 'text/csv')
 
 
