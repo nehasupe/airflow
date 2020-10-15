@@ -57,7 +57,10 @@ def run(argv=None):
 	dataflow_options = pipeline_options.view_as(DataflowOptions)
 
 	with beam.Pipeline(options=pipeline_options) as pipeline:
-		(pipeline | 'start' >> beam.Create([None]) | 'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path)) | 'Write CSV' >> beam.ParDo(WriteCSVFile(dataflow_options.output_bucket)))
+		(pipeline
+		 |'start' >> beam.Create([None]) 
+		 | 'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path)) 
+		 | 'Write CSV' >> beam.ParDo(WriteCSVFile(dataflow_options.output_bucket)))
 
 if __name__ == '__main__':
 	logging.getLogger().setLevel(logging.INFO)
