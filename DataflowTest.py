@@ -27,6 +27,7 @@ class ReadFile(beam.DoFn):
 				created_at = prod.get("created_at")
 				currency = prod.get("currency")
 				clear_data.append([product_id, product_name, product_price, currency, created_at])
+		print(clear_data)
 		yield clear_data
 class WriteCSVFile(beam.DoFn):
 	def __init__(self, bucket_name):
@@ -59,8 +60,9 @@ def run(argv=None):
 	with beam.Pipeline(options=pipeline_options) as pipeline:
 		(pipeline
 		 |'start' >> beam.Create([None]) 
-		 | 'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path)) 
-		 | 'Write CSV' >> beam.ParDo(WriteCSVFile(dataflow_options.output_bucket)))
+		 |'Read JSON' >> beam.ParDo(ReadFile(dataflow_options.input_path)) 
+		 |'Write CSV' >> beam.ParDo(WriteCSVFile(dataflow_options.output_bucket))
+		)
 
 if __name__ == '__main__':
 	logging.getLogger().setLevel(logging.INFO)
